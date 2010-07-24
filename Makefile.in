@@ -58,7 +58,7 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 mod_webmuzzle_la_LIBADD =
 am_mod_webmuzzle_la_OBJECTS = mod_webmuzzle.lo cookie.lo request.lo \
-	dbpool.lo dbconnect.lo
+	dbpool.lo dbconnect.lo html.lo dsn.lo client_block.lo
 mod_webmuzzle_la_OBJECTS = $(am_mod_webmuzzle_la_OBJECTS)
 mod_webmuzzle_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -210,7 +210,9 @@ top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = mod_webmuzzle.la
 mod_webmuzzle_la_SOURCES = src/mod_webmuzzle.cc src/mod_webmuzzle.h \
 	src/cookie.h src/cookie.cc src/request.h src/request.cc \
-	src/dbpool.h src/dbpool.cc src/dbconnect.h src/dbconnect.cc
+	src/dbpool.h src/dbpool.cc src/dbconnect.h src/dbconnect.cc \
+	src/html.h src/html.cc src/namecall.h src/dsn.h src/dsn.cc \
+	src/client_block.h src/client_block.cc
 mod_webmuzzle_la_LDFLAGS = `@apache_dir@/bin/apr-1-config --link-ld \
 	--libs` -module
 INCLUDES = -I./src -I/usr/local/include -I`apxs -q INCLUDEDIR` `@apache_dir@/bin/apr-1-config --includes`
@@ -287,9 +289,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client_block.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cookie.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbconnect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbpool.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsn.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mod_webmuzzle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request.Plo@am__quote@
 
@@ -348,6 +353,27 @@ dbconnect.lo: src/dbconnect.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/dbconnect.cc' object='dbconnect.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dbconnect.lo `test -f 'src/dbconnect.cc' || echo '$(srcdir)/'`src/dbconnect.cc
+
+html.lo: src/html.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT html.lo -MD -MP -MF $(DEPDIR)/html.Tpo -c -o html.lo `test -f 'src/html.cc' || echo '$(srcdir)/'`src/html.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/html.Tpo $(DEPDIR)/html.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/html.cc' object='html.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o html.lo `test -f 'src/html.cc' || echo '$(srcdir)/'`src/html.cc
+
+dsn.lo: src/dsn.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dsn.lo -MD -MP -MF $(DEPDIR)/dsn.Tpo -c -o dsn.lo `test -f 'src/dsn.cc' || echo '$(srcdir)/'`src/dsn.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/dsn.Tpo $(DEPDIR)/dsn.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/dsn.cc' object='dsn.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dsn.lo `test -f 'src/dsn.cc' || echo '$(srcdir)/'`src/dsn.cc
+
+client_block.lo: src/client_block.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT client_block.lo -MD -MP -MF $(DEPDIR)/client_block.Tpo -c -o client_block.lo `test -f 'src/client_block.cc' || echo '$(srcdir)/'`src/client_block.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/client_block.Tpo $(DEPDIR)/client_block.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/client_block.cc' object='client_block.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o client_block.lo `test -f 'src/client_block.cc' || echo '$(srcdir)/'`src/client_block.cc
 
 mostlyclean-libtool:
 	-rm -f *.lo

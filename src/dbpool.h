@@ -14,7 +14,7 @@
 #include <map>
 #include <stdexcept>
 
-//#include "apr_dbd.h"
+#include "apr_dbd.h"
 
 #include "dbconnect.h"
 
@@ -27,7 +27,7 @@ class dbpool
 {
 private:
 static map< string, dbconnect > DBPool;
-static apr_pool_t *apr_pool;
+///static apr_pool_t *apr_pool;
 
 public:
 
@@ -35,8 +35,8 @@ public:
 void init (
 	  apr_pool_t* p ///\param p
 ) {
-	apr_pool = p;
-	::apr_dbd_init (apr_pool);
+///apr_pool = p;
+	::apr_dbd_init (p);
 }
 
 ///\brief Select exist or create connection for session
@@ -45,7 +45,7 @@ dbconnect& open (
 	, const char* rip ///\param rip Remote IP
 ) {
 	if ( DBPool.size() > MAX_DB_CONNECT ) {
-		; //!!!!! Drop olderst
+		; //!!!!! Find and erase olderst
 	}
 
 	if ( DBPool.find(SID) == DBPool.end()) { DBPool [SID].remote(rip); }

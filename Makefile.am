@@ -12,6 +12,13 @@ mod_webmuzzle_la_SOURCES+= src/dbpool.h
 mod_webmuzzle_la_SOURCES+= src/dbpool.cc
 mod_webmuzzle_la_SOURCES+= src/dbconnect.h
 mod_webmuzzle_la_SOURCES+= src/dbconnect.cc
+mod_webmuzzle_la_SOURCES+= src/html.h
+mod_webmuzzle_la_SOURCES+= src/html.cc
+mod_webmuzzle_la_SOURCES+= src/namecall.h
+mod_webmuzzle_la_SOURCES+= src/dsn.h
+mod_webmuzzle_la_SOURCES+= src/dsn.cc
+mod_webmuzzle_la_SOURCES+= src/client_block.h
+mod_webmuzzle_la_SOURCES+= src/client_block.cc
 
 mod_webmuzzle_la_LDFLAGS = `@apache_dir@/bin/apr-1-config --link-ld --libs`
 
