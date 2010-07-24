@@ -1,5 +1,6 @@
 //@(#) Cookie parse and get (header)
 //Author: Andrew Wingorodov <mail@andr.mobi>
+//License: GPLv3
 //$Id$
 
 #ifndef	WEBMUZZLE_REQUEST_H
@@ -11,6 +12,8 @@
 
 #include "cookie.h"
 #include "dbpool.h"
+#include "html.h"
+#include "client_block.h"
 
 using namespace std;
 
@@ -24,6 +27,15 @@ private:
 	request_rec* Req;
 	cookie Cookie;
 	dbconnect dbh;
+	client_block Data;
+	html Html;
+
+///\brief Check out log in
+bool check_login ();
+
+///\brief Flush output response
+void response ();
+
 
 public:
 
@@ -33,7 +45,9 @@ request (
 )
 : Req(req)
 , Cookie(req)
-{}
+, Data(req)
+{
+}
 
 ///\brief Destroy
 ~request ()
@@ -42,11 +56,8 @@ request (
 	response();
 }
 
-///\brief Make all processing
-void exec ();
-
-///\brief Flush output response
-void response ();
+///\brief Make all
+void processing ();
 
 }; //request
 

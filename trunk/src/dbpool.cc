@@ -8,6 +8,6 @@
 namespace webmuzzle {
 
 map<string,dbconnect> dbpool::DBPool;
-apr_pool_t *dbpool::apr_pool;
+///apr_pool_t *dbpool::apr_pool;
 
 }//::webmuzzle

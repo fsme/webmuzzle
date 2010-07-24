@@ -13,6 +13,8 @@
 #include "apr_hash.h"
 #include "apr_time.h"
 
+#include "dsn.h"
+
 using namespace std;
 
 namespace webmuzzle {
@@ -21,12 +23,13 @@ namespace webmuzzle {
 class dbconnect
 {
 private:
- 	apr_dbd_t*			Handler;
-const apr_dbd_driver_t*	Driver;
-	apr_hash_t*			Prepared;
-	apr_status_t		Status;
-	apr_time_t			Last;
-	string				Remote;
+ 	apr_dbd_t*		Handler;
+const
+apr_dbd_driver_t*		Driver;
+	apr_hash_t*		Prepared;
+	apr_status_t	Status;
+	apr_time_t		Last;
+	string		Remote;
 
 public:
 
@@ -38,13 +41,28 @@ dbconnect ()
 }
 
 ///\brief Destroy
-~dbconnect () {
+~dbconnect () { this->close(); }
+
+///\brief Close and cleanup connection
+void close ()
+{
 	if ( is_open()) ::apr_dbd_close ( Driver, Handler);
+	Status = APR_EINIT;
+	Driver = 0;
+	Handler = 0;
+	Last = ::apr_time_now();
+	Remote.clear();
 }
 
 ///\brief Open connect
 void open (
 	  apr_pool_t* pool ///\param pool APR pool to register cleanup
+	, const string& driver_///\param driver_ Name driver
+	, const string& user_///\param user_ Database's user
+	, const string& passwd_///\param passwd_ Database's password
+	, const string& host_///\param host_ Database's host
+	, const string& port_ = "" ///\param port_ Port (0 - use default)
+	, const string& path_ = "" ///\param path_ Socket path
 );
 
 ///\brief Do SQL-request (non-result)
