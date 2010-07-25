@@ -1,9 +1,10 @@
-//@(#) Virtual base for Data Source Name (DSN)
+//@(#) Create Data Source Name (DSN) through name of database
 //Author: Andrew Wingorodov <mail@andr.mobi>
+//License: GPLv3
 //$Id$
 
 #ifndef	WEBMUZZLE_DSN_H
-#define	WEBMUZZLE_DSN_H
+#define	WEBMUZZLE_DSN_H 1
 
 #include <string>
 

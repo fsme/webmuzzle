@@ -30,6 +30,8 @@ private:
 const string& sidgen () const;
 
 public:
+///\brief Create empty for stl_pair
+cookie () : CookieMap() {}
 
 ///\brief Create : read cookie from request headers
 cookie (
@@ -37,10 +39,13 @@ cookie (
 );
 
 ///\brief Get or set cookie by name
-string& operator[] (const string& key///\param key_ Name of cookie
+string& operator[] (const string& key_///\param key_ Name of cookie
 ) {
-	return CookieMap [key]; }
+	return CookieMap [key_];
+}
 
+///\brief Erase all from map
+void clear () { CookieMap.clear(); }
 
 ///\brief Output cookie to response headers
 void output (

@@ -30,6 +30,8 @@ private:
 void parse_data ();
 
 public:
+///\brief Create empty by default
+client_block () {}
 
 ///\brief Read and parse client data : call named function by HTTP-method
 client_block (

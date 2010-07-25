@@ -10,19 +10,28 @@ namespace webmuzzle {
 //
 void request::processing()
 {
-	Data.parse();
-	dbh = dbase::pool().open( Cookie["SID"], Req->connection->remote_ip );
+	dbh = dbase::pool().open( Data->Cookie["SID"]
+							, Data->APRreq->connection->remote_ip );
+	Data->ClientBlock.parse();
+	dbh.FSM()->init(Data);
+	for(;;) {
+		try { dbh.FSM()->do_http_request();
+		} catch (const event::logout& e) { dbh.FSM()->do_logout();
+		} catch (const event::login& e)  { dbh.FSM()->do_login();
+		} catch (const event::login_fail& e) { dbh.FSM()->do_login_failure();
+		} catch (event::next_state& e) {
+					dbh.FSM( e.next_state_is());
+					if ( e.is_done()) break;
+		} catch (const event::is_done& e)  { break;
+		}
+	break;
+	}//processing loop (FSM's Event/State table implementation)
 
-	if ( !check_login()) return;
-
-	if (0 == Cookie["DATABASE"].size())
-	{ /// Show databases
-			
-	}
-	Html.replace( "<h1>You are inside</h1>", "MAINTABLE" );
+	///Html.replace( "<h1>You are inside</h1>", "MAINTABLE" );
 }
 
-//
+/*****
+
 bool request::check_login()
 {
 	if ( 0 == string("/logout").compare(0, sizeof("/logout"), Req->uri)
@@ -34,16 +43,16 @@ bool request::check_login()
 	}
 
 	if ( !dbh.is_open()
-	&& ( Data["user"].size() > 0 )
+	&& ( Data.ClientBlock["user"].size() > 0 )
 	) {
 		try {
 			dbh.open ( Req->pool
-					, Data["driver"]
-					, Data["user"]
-					, Data["password"]
-					, Data["host"]
-					, Data["port"]
-					, Data["path"]
+					, Data.ClientBlock ["driver"]
+					, Data.ClientBlock ["user"]
+					, Data.ClientBlock ["password"]
+					, Data.ClientBlock ["host"]
+					, Data.ClientBlock ["port"]
+					, Data.ClientBlock ["path"]
 			);
 		} catch (const std::exception& e) {
 			/// Log e.what();
@@ -67,14 +76,6 @@ bool request::check_login()
 	}
 }
 
-//
-void request::response ()
-{
-	Cookie.output(Req);
-	::ap_set_content_type(Req, "text/html; charset=UTF-8");
-	::ap_set_content_length( Req, static_cast<apr_off_t>(Html.str().size()) );
-	::ap_rprintf(Req, "%s", Html.str().c_str());
-}
-
+**************************/
 
 }//::webmuzzle
