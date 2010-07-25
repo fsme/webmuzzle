@@ -24,11 +24,8 @@ public:
 ///\brief Create
 html () : result(pattern) {}
 
-///\brief Set HTTP title
-void title (
-	  const string& title_///\param title_ New title
-) {
-}
+///\brief Clear result (free memory)
+void clear () { result.clear(); }
 
 ///\brief Set message : replace pattern or previous message
 void replace (
