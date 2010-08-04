@@ -46,10 +46,10 @@ try {
 	Request->processing();
 
 } catch (const std::exception& e) {
-	ap_rputs( e.what(), r);
+	simple_http_echo (r, e.what());
 
 } catch (...) {
-	ap_rputs( "<h1>Any error</h1>", r);
+	simple_http_echo (r, "Unknown except");
 }
 
 	return OK;
@@ -62,7 +62,7 @@ void webmuzzle_register_hooks (
 	  apr_pool_t *pool
 ) {
 	::ap_hook_handler( webmuzzle_handler, NULL, NULL, APR_HOOK_FIRST);
-	dbase::pool().init(pool);
+	::apr_dbd_init (pool);
 }
 
 extern "C"

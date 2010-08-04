@@ -11,6 +11,7 @@
 #include "dbpool.h"
 #include "request_data.h"
 #include "fsm.h"
+#include "events.h"
 
 using namespace std;
 
@@ -21,27 +22,22 @@ namespace webmuzzle {
 class request
 {
 private:
-	dbconnect dbh;
+	fsm_state* FSM;
 	auto_ptr<request_data> Data;
+	auto_ptr<string> session_id;
 
-///\brief Flush output response
-void response ();
+///\brief Recursive stack of FSM
+void fsm_stack (int depth_///\param depth_ Depth of recursive call
+);
 
 public:
 
 ///\brief Create
-request (
-	  request_rec* req ///\param r APR request pointer
-) {
-	Data = auto_ptr<request_data>( new request_data (req));
-}
+request ( request_rec* req_///\param req_ APR request
+);
 
 ///\brief Destroy
-~request ()
-{
-	dbh.last ( ::apr_time_now());
-	dbh.FSM()->response();
-}
+~request () {}
 
 ///\brief Make all
 void processing ();

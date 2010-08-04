@@ -32,8 +32,8 @@ void replace (
 	  const string& msg_///\param msg_ Message text
 	, const string& mark_///\param mark_ Point for replace
 ) {
-static map< string, string > prev;
-string Mark = "<!--[["+mark_+"]]-->";
+	static map< string, string > prev;
+	string Mark = "<!--[["+mark_+"]]-->";
 
 	string::size_type pos;
 	if ( (pos = result.find(Mark)) != string::npos

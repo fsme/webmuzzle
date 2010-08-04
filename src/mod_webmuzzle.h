@@ -41,6 +41,17 @@ return static_cast<byte_count_t*>(\
 	ap_get_module_config( r->connection->conn_config, &webmuzzle_module) );
 }
 
+///\brief Simple HTTP response
+inline
+void simple_http_echo (
+	  request_rec* req_///\param req_
+	, const char* msg_///\param msg_
+) {
+	::ap_set_content_type ( req_, "text/html; charset=UTF-8");
+	::ap_set_content_length( req_, strlen(msg_) );
+	::ap_rprintf( req_, "%s", msg_);
+}
+
 }//::webmuzzle
 
 #endif //MOD_WEBMUZZLE_H

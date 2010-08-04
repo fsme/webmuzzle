@@ -59,7 +59,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 mod_webmuzzle_la_LIBADD =
 am_mod_webmuzzle_la_OBJECTS = mod_webmuzzle.lo cookie.lo request.lo \
 	dbpool.lo dbconnect.lo html.lo dsn.lo client_block.lo \
-	state_login.lo
+	request_data.lo state_login.lo state_logout.lo
 mod_webmuzzle_la_OBJECTS = $(am_mod_webmuzzle_la_OBJECTS)
 mod_webmuzzle_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -214,8 +214,9 @@ mod_webmuzzle_la_SOURCES = src/mod_webmuzzle.cc src/mod_webmuzzle.h \
 	src/dbpool.h src/dbpool.cc src/dbconnect.h src/dbconnect.cc \
 	src/html.h src/html.cc src/namecall.h src/dsn.h src/dsn.cc \
 	src/client_block.h src/client_block.cc src/request_data.h \
-	src/events.h src/fsm_state.h src/fsm.h src/state_login.h \
-	src/state_login.cc
+	src/request_data.cc src/events.h src/fsm_state.h src/fsm.h \
+	src/state_login.h src/state_login.cc src/state_logout.h \
+	src/state_logout.cc
 mod_webmuzzle_la_LDFLAGS = `@apache_dir@/bin/apr-1-config --link-ld \
 	--libs` -module
 INCLUDES = -I./src -I/usr/local/include -I`apxs -q INCLUDEDIR` `@apache_dir@/bin/apr-1-config --includes`
@@ -300,7 +301,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/html.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mod_webmuzzle.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/request_data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/state_login.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/state_logout.Plo@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -379,12 +382,26 @@ client_block.lo: src/client_block.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o client_block.lo `test -f 'src/client_block.cc' || echo '$(srcdir)/'`src/client_block.cc
 
+request_data.lo: src/request_data.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT request_data.lo -MD -MP -MF $(DEPDIR)/request_data.Tpo -c -o request_data.lo `test -f 'src/request_data.cc' || echo '$(srcdir)/'`src/request_data.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/request_data.Tpo $(DEPDIR)/request_data.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/request_data.cc' object='request_data.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o request_data.lo `test -f 'src/request_data.cc' || echo '$(srcdir)/'`src/request_data.cc
+
 state_login.lo: src/state_login.cc
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT state_login.lo -MD -MP -MF $(DEPDIR)/state_login.Tpo -c -o state_login.lo `test -f 'src/state_login.cc' || echo '$(srcdir)/'`src/state_login.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/state_login.Tpo $(DEPDIR)/state_login.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/state_login.cc' object='state_login.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o state_login.lo `test -f 'src/state_login.cc' || echo '$(srcdir)/'`src/state_login.cc
+
+state_logout.lo: src/state_logout.cc
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT state_logout.lo -MD -MP -MF $(DEPDIR)/state_logout.Tpo -c -o state_logout.lo `test -f 'src/state_logout.cc' || echo '$(srcdir)/'`src/state_logout.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/state_logout.Tpo $(DEPDIR)/state_logout.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/state_logout.cc' object='state_logout.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o state_logout.lo `test -f 'src/state_logout.cc' || echo '$(srcdir)/'`src/state_logout.cc
 
 mostlyclean-libtool:
 	-rm -f *.lo

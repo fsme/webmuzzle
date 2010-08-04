@@ -14,52 +14,60 @@
 #include <map>
 #include <stdexcept>
 
-#include "apr_dbd.h"
-
-#include "dbconnect.h"
+#include "fsm_state.h"
+#include "state_logout.h"
 
 using namespace std;
 
 namespace webmuzzle {
 
-///\brief Static database pool
+///\brief Static pool of connection
 class dbpool
 {
 private:
-static map< string, dbconnect > DBPool;
-///static apr_pool_t *apr_pool;
+static map< string, fsm_state* > FSMpool;
 
 public:
-
-///\brief Keep APR pool : call only once!
-void init (
-	  apr_pool_t* p ///\param p
-) {
-///apr_pool = p;
-	::apr_dbd_init (p);
+///\brief Destroy : cleanup pool of connection
+~dbpool ()
+{
+	map< string, fsm_state* >::iterator it = FSMpool.begin();
+	for(; it != FSMpool.end(); ++it)
+		delete FSMpool [ it->first ];
 }
 
 ///\brief Select exist or create connection for session
-dbconnect& open (
-	  const string& SID ///\param sid Session ID
-	, const char* rip ///\param rip Remote IP
+fsm_state* get_connect (
+	  const string& sid_ ///\param sid Session ID
+	, auto_ptr<request_data> data_ ///\param data_ Request Data
 ) {
-	if ( DBPool.size() > MAX_DB_CONNECT ) {
-		; //!!!!! Find and erase olderst
+	if ( FSMpool.size() > MAX_DB_CONNECT ) {
+		; //!!!!! Find and erase a junk
 	}
 
-	if ( DBPool.find(SID) == DBPool.end()) { DBPool [SID].remote(rip); }
+	if ( FSMpool.find(sid_) == FSMpool.end())
+		FSMpool [sid_] = new state::logout (data_);
 
-	if ( DBPool [SID].remote() != rip )
-		throw domain_error (SID + " mismatch remote IP " + rip);
+	return FSMpool [sid_];
+}
 
-	return DBPool [SID];
+///\brief Set new FSM state
+fsm_state* next_state_is (
+	  const string& sid_///\param sid_ Session ID
+	, webmuzzle::fsm_state* next_///\param next_ New state for FSM
+) {
+	if ( FSMpool.find(sid_) == FSMpool.end())
+	throw domain_error (\
+				next_->state_name()+" state for nonexistent session "+sid_);
+
+	delete FSMpool[sid_]; //Free old state : *MUST* be allocated
+	return FSMpool[sid_] = next_;
 }
 
 }; //dbpool
 
-///\brief Pool singleton
-struct dbase {
+///\brief Pool's singleton
+struct db {
 	static dbpool& pool () {
 		static dbpool instance;
 		return instance;

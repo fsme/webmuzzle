@@ -7,7 +7,6 @@
 
 namespace webmuzzle {
 
-map<string,dbconnect> dbpool::DBPool;
-///apr_pool_t *dbpool::apr_pool;
+map<string, fsm_state* > dbpool::FSMpool;
 
 }//::webmuzzle
