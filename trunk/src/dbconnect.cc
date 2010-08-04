@@ -29,6 +29,16 @@ void dbconnect::open (
 }
 
 //
+void dbconnect::close ()
+{
+	if ( is_open()) ::apr_dbd_close ( Driver, Handler);
+	Status = APR_EINIT;
+	Driver = 0;
+	Handler = 0;
+	Last = ::apr_time_now();
+}
+
+//
 int dbconnect::query (
 	  const string& sql
 ) const {

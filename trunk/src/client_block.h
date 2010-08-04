@@ -29,7 +29,14 @@ private:
 ///\brief Parse HTTP input data key1=value1&key2=value2 ...
 void parse_data ();
 
+///\brief Parse GET data
+void parse_get_data () {}
+
+///\brief Parse POST data
+void parse_post_data ();
+
 public:
+
 ///\brief Create empty by default
 client_block () {}
 
@@ -49,18 +56,18 @@ void parse ()
 		if (string("GET") == Req->method ) parse_get_data();
 }
 
-///\brief Parse GET data
-void parse_get_data () {}
-
-///\brief Parse POST data
-void parse_post_data ();
+///\brief Cleanup
+void clear () { DataMap.clear(); }
 
 ///\brief Try to get data chunk by name
 ///\return Content of named data
-inline
 const string& operator[] (
 	  const string& key_///param key_ Name of chunk
 ) {
+
+///	if ( DataMap.find (key_) == DataMap.end())
+///	throw out_of_range (key_+": not found into client block");
+
 	return DataMap [key_];
 }
 

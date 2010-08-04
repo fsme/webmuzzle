@@ -8,74 +8,40 @@
 namespace webmuzzle {
 
 //
+request::request ( request_rec* req_ ) {
+	Data = auto_ptr<request_data>( new request_data (req_));
+}
+
+//
+void request::fsm_stack (
+	  int depth_///\param depth_ Depth of recursive
+) {
+	try {
+		if (0 < depth_) fsm_stack (--depth_);
+		FSM->do_http_request();
+	} catch (const event::done& e) { throw e;
+	} catch (const event::logout& e) { FSM->do_logout();
+	} catch (const event::login& e)  { FSM->do_login();
+	} catch (const event::login_fail& e) { FSM->do_login_failure();
+	} catch (const event::next_state& s) {
+			FSM = db::pool().next_state_is ( *session_id.get(), s.new_state());
+			if ( s.is_done()) throw event::done();
+	}
+}
+
+//
 void request::processing()
 {
-	dbh = dbase::pool().open( Data->Cookie["SID"]
-							, Data->APRreq->connection->remote_ip );
+	session_id = auto_ptr<string> (new string (Data->Cookie["SID"]));
+	session_id->append(Data->APRreq->connection->remote_ip);
+
 	Data->ClientBlock.parse();
-	dbh.FSM()->init(Data);
-	for(;;) {
-		try { dbh.FSM()->do_http_request();
-		} catch (const event::logout& e) { dbh.FSM()->do_logout();
-		} catch (const event::login& e)  { dbh.FSM()->do_login();
-		} catch (const event::login_fail& e) { dbh.FSM()->do_login_failure();
-		} catch (event::next_state& e) {
-					dbh.FSM( e.next_state_is());
-					if ( e.is_done()) break;
-		} catch (const event::is_done& e)  { break;
-		}
-	break;
-	}//processing loop (FSM's Event/State table implementation)
+	FSM = db::pool().get_connect( *session_id.get(), Data );
+	try {
+		fsm_stack (3);
+	} catch (const event::done& e) { /* OK */ }
 
-	///Html.replace( "<h1>You are inside</h1>", "MAINTABLE" );
+	FSM->do_http_response();
 }
-
-/*****
-
-bool request::check_login()
-{
-	if ( 0 == string("/logout").compare(0, sizeof("/logout"), Req->uri)
-	) {
-		dbh.close();
-		Html.loginform (true);
-		Html.replace(" Good bye, you're welcome ", "MESSAGE");
-		return false;
-	}
-
-	if ( !dbh.is_open()
-	&& ( Data.ClientBlock["user"].size() > 0 )
-	) {
-		try {
-			dbh.open ( Req->pool
-					, Data.ClientBlock ["driver"]
-					, Data.ClientBlock ["user"]
-					, Data.ClientBlock ["password"]
-					, Data.ClientBlock ["host"]
-					, Data.ClientBlock ["port"]
-					, Data.ClientBlock ["path"]
-			);
-		} catch (const std::exception& e) {
-			/// Log e.what();
-		}
-		if ( !dbh.is_open()) {
-			Html.loginform (true);
-			Html.replace(" Login failure ", "MESSAGE");
-			return false;
-		}
-	}
-
-	if ( dbh.is_open())
-	{
-		Html.loginform (false);
-		Html.replace("", "MESSAGE");
-		return true;
-	} else {
-		Html.loginform (true);
-		Html.replace(" Login please ", "MESSAGE");
-		return false;
-	}
-}
-
-**************************/
 
 }//::webmuzzle

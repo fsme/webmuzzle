@@ -70,7 +70,8 @@ cookie::cookie (
 }
 
 //
-void cookie::output ( request_rec *req
+void cookie::output (
+	  request_rec *req
 ) const {
 map<string,string>::const_iterator cook = CookieMap.begin();
 

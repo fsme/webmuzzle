@@ -24,27 +24,32 @@ public:
 ///\brief Destroy
 virtual ~fsm_state () {}
 
-///\brief Initialization data block
-void init (
+///\brief Set request data block
+inline
+void data (
 	  auto_ptr<request_data> data_ptr ///\param data_ptr Prepared request data
 ) {
 	Data = data_ptr;
 }
 
-///\brief HTTP-response for result
-void response ()
-{
-	Data->Cookie.output( Data->APRreq);
-	::ap_set_content_type (  Data->APRreq, "text/html; charset=UTF-8");
-	::ap_set_content_length( Data->APRreq
-							, static_cast<apr_off_t>(Data->Html.str().size()));
-	::ap_rprintf( Data->APRreq, "%s", Data->Html.str().c_str());
-	Data->Cookie.clear();
-	Data->Html.clear();
+///\brief Tranfer request data for next FSM-state
+auto_ptr<request_data> data () { return Data; }
+
+///\brief Set message
+void message (
+	  const string& msg_///\param msg_
+) {
+	Data->Html.replace(msg_, "MESSAGE");
 }
+
+///\brief Initialization data block
+void do_http_response () { Data->http_response(); }
 
 ///\brief Processing HTTP request
 virtual void do_http_request() = 0;
+
+///\brief Get state name as string
+virtual const string& state_name () const = 0;
 
 ///\brief Event try to login
 virtual void do_login () = 0;

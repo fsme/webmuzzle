@@ -4,18 +4,18 @@
 //$Id$
 
 #ifndef	WEBMUZZLE_EVENT_H
-#define	WEBMUZZLE_EVENT_H 1
+#define	WEBMUZZLE_EVENT_H
 
-#include <memory>
 #include <exception>
 
 #include "fsm_state.h"
 
 using namespace std;
+using namespace webmuzzle;
 
 namespace event {
 
-///
+///\brief Interface of event
 class base_event
 	: public std::exception
 {
@@ -34,33 +34,32 @@ virtual const char* what() const throw () { return message.c_str(); }
 
 };//base_event base
 
-
-///class next_state
-///brief Special exception for change of state of FSM
+///\class next_state
+///\brief Special exception for change of state of FSM
 class next_state
 	: public base_event
 {
 private:
-	auto_ptr<fsm_state> NextState;
+	fsm_state* State;
 	bool Done;
 
 public:
 
 ///\brief Create
 explicit next_state (
-	  auto_ptr<fsm_state> state_ptr ///\param ptr_ New state for FSM
-	, bool is_done_ = true ///\param is_done_ Set false for continue processing
+	  fsm_state* new_state ///\param new_state New state for FSM
+	, bool is_done_ = false ///\param is_done_ Set True to break processing
 )
-: base_event ("New state of FSM")
-, NextState (state_ptr)
+: base_event ("New state")
+, State (new_state)
 , Done (is_done_)
 {}
 
 ///\brief Next state for FSM
-auto_ptr<fsm_state> next_state_is () throw () { return NextState; }
+fsm_state* new_state () const throw () { return State; }
 
 ///\brief Check done flag
-inline bool is_done () throw () { return Done; }
+inline bool is_done () const throw () { return Done; }
 
 ///\brief Destroy virtual throw
 virtual ~next_state () throw () {}
@@ -68,8 +67,8 @@ virtual ~next_state () throw () {}
 };//next_state
 
 
-///class logout
-///brief Event logout about 
+///\class logout
+///\brief Event logout about 
 class logout
 	: public base_event
 {
@@ -109,14 +108,14 @@ virtual ~login_fail () throw () {}
 
 
 ///\brief Special exception for break processing
-class is_done
+class done
 	: public base_event
 {
 public:
-explicit is_done () : base_event("Break request processing") {}
+explicit done () : base_event("Break processing") {}
 
 ///\brief Destroy virtual throw
-virtual ~is_done () throw () {}
+virtual ~done () throw () {}
 
 };//is_done
 

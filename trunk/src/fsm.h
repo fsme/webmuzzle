@@ -11,6 +11,7 @@ namespace webmuzzle {
 #include "events.h"
 #include "fsm_state.h"
 #include "state_login.h"
+#include "state_logout.h"
 
 }//::webmuzzle
 

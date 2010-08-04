@@ -20,11 +20,14 @@ mod_webmuzzle_la_SOURCES+= src/dsn.cc
 mod_webmuzzle_la_SOURCES+= src/client_block.h
 mod_webmuzzle_la_SOURCES+= src/client_block.cc
 mod_webmuzzle_la_SOURCES+= src/request_data.h
+mod_webmuzzle_la_SOURCES+= src/request_data.cc
 mod_webmuzzle_la_SOURCES+= src/events.h
 mod_webmuzzle_la_SOURCES+= src/fsm_state.h
 mod_webmuzzle_la_SOURCES+= src/fsm.h
 mod_webmuzzle_la_SOURCES+= src/state_login.h
 mod_webmuzzle_la_SOURCES+= src/state_login.cc
+mod_webmuzzle_la_SOURCES+= src/state_logout.h
+mod_webmuzzle_la_SOURCES+= src/state_logout.cc
 
 mod_webmuzzle_la_LDFLAGS = `@apache_dir@/bin/apr-1-config --link-ld --libs`
 

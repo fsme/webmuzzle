@@ -8,9 +8,10 @@
 
 #include "httpd.h"
 
+#include "html.h"
 #include "cookie.h"
 #include "client_block.h"
-#include "html.h"
+#include "dbconnect.h"
 
 namespace webmuzzle {
 
@@ -18,12 +19,13 @@ namespace webmuzzle {
 struct request_data
 {
 request_rec*	APRreq;
-client_block	ClientBlock;
-cookie			Cookie;
 html			Html;
+cookie			Cookie;
+client_block	ClientBlock;
+dbconnect		DB;
 
 ///\brief Create empty by default
-request_data () {}
+request_data () : APRreq (0) {}
 
 ///\brief Create with APR request_rec pointer
 request_data (
@@ -33,6 +35,9 @@ request_data (
 , Cookie (req_)
 , ClientBlock (req_)
 {}
+
+///\brief HTTP-response and cleanup data of client
+void http_response () ;
 
 };//request_data 
 
